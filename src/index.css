@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande",
+    sans-serif;
+  color: #707070;
+  background: #F7F7F7;
+
+}
+
+a {
+  color: #707070;
+  text-decoration: none;
+}
+
+button:hover {
+  cursor: pointer;
+}
