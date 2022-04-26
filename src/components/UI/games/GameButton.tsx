@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
-type props ={
-  selected: boolean
-}
+type props = {
+  selected: boolean;
+  color: string;
+};
 
 const GameButton = styled.button<props>`
   width: 3vw;
@@ -11,8 +12,7 @@ const GameButton = styled.button<props>`
   color: white;
   border-radius: 50%;
   border: none;
-  background: ${(props)=>props.selected ? "black" : "#ADC0C4"};
+  background: ${(props) => (props.selected ? props.color : "#ADC0C4")};
+`;
 
-`
-
-export default GameButton
+export default GameButton;

@@ -33,20 +33,33 @@ export const recentBetSlice = createSlice({
         type: { id: action.payload.type.id, type: action.payload.type.type },
       });
     },
+
     getRecentBet: (state, action: PayloadAction<initialRecentBetsValue[]>) => {
-      action.payload.forEach((element) => {
-        state.push({
-          id: element.id,
-          user_id: element.user_id,
-          game_id: element.game_id,
-          choosen_numbers: element.choosen_numbers,
-          price: element.price,
-          created_at: element.created_at,
-          type: { id: element.type.id, type: element.type.type },
-        });
+      state.splice(0, state.length);
+      action.payload.forEach((element, index) => {
+        state.splice(index, 0, element);
+      });
+
+      // action.payload.forEach((element) => {
+      //   state.push({
+      //     id: element.id,
+      //     user_id: element.user_id,
+      //     game_id: element.game_id,
+      //     choosen_numbers: element.choosen_numbers,
+      //     price: element.price,
+      //     created_at: element.created_at,
+      //     type: { id: element.type.id, type: element.type.type },
+      //   });
+      // });
+    },
+
+    getFilteredBet: (state, action: PayloadAction<initialRecentBetsValue[]>) => {
+      state.splice(0, state.length);
+      action.payload.forEach((element, index) => {
+        state.splice(0, 0, element);
       });
     },
   },
 });
 
-export const { addRecentBet, getRecentBet } = recentBetSlice.actions;
+export const { addRecentBet, getRecentBet, getFilteredBet } = recentBetSlice.actions;

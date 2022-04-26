@@ -10,7 +10,9 @@ const NovaAposta = styled.div`
   display: flex;
   height: 100%;
   min-height: 68vh;
-`
+  width: 100%;
+  justify-content: space-around;
+`;
 
 const NewBetPage = () => {
   const dispatch: any = useDispatch();

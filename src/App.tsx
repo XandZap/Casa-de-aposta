@@ -29,11 +29,11 @@ function App() {
       <Footer>Copyright 2020 Luby Software</Footer>
       <ToastContainer
         position="top-right"
-        autoClose={2000}
+        autoClose={1000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
-        rtl={true}
+        rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover

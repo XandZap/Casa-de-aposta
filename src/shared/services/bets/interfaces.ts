@@ -2,5 +2,6 @@ import { IBodyNewBet, IResponseListBet, IResponseNewBet } from "@shared/interfac
 
 export interface IUser {
   listBet: () => Promise<IResponseListBet>;
-  newBet: (games: IBodyNewBet) => Promise<IResponseNewBet>;
+  saveNewBet: (games: IBodyNewBet) => Promise<IResponseNewBet>;
+  filterBets: (id: string) => Promise<IResponseListBet>;
 }

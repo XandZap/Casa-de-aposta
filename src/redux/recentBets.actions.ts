@@ -1,10 +1,10 @@
 import betsServices from "@shared/services/bets";
-import { getRecentBet } from "./recentBets.slice";
+import { getFilteredBet, getRecentBet } from "./recentBets.slice";
 import { AppThunk } from "./store";
 
 import { toast } from "react-toastify";
 
-const { listBet } = betsServices();
+const { listBet, filterBets } = betsServices();
 
 export const fetchRecentBetData = (): AppThunk => {
   return async (dispatch) => {
@@ -14,8 +14,6 @@ export const fetchRecentBetData = (): AppThunk => {
     };
     const recentGamesData = await fetchGames();
 
-    const gamesData = await fetchGames();
-    
     toast.promise(fetchGames, {
       pending: "Carregando",
       success: "Jogos recentes carregados",
@@ -23,5 +21,25 @@ export const fetchRecentBetData = (): AppThunk => {
     });
 
     dispatch(getRecentBet(recentGamesData));
+  };
+};
+
+export const fetchFilteredBetsData = (id: string): AppThunk => {
+  return async (dispatch) => {
+    const fetchGames = async () => {
+      const responseFilteredGames: any = await filterBets(id);
+      return responseFilteredGames.data;
+    };
+
+    const filtredGamesData = await fetchGames();
+    console.log(filtredGamesData);
+
+    toast.promise(fetchGames, {
+      pending: "Carregando",
+      success: "Jogos filtrados com sucesso",
+      error: "Erro ao carregar jogos",
+    });
+
+    dispatch(getFilteredBet(filtredGamesData));
   };
 };

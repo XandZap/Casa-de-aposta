@@ -14,7 +14,7 @@ type props = {
 const NewBet: FC<props> = (props) => {
   const getNumbersToBets = useSelector(selectNumbersToBet);
   const dispatch = useDispatch();
-  const cart = useSelector(selectCart)
+  const cart = useSelector(selectCart);
 
   const newArr = Array(props.currentGame.range);
   const newArrButton = Array(props.currentGame.range);
@@ -43,7 +43,12 @@ const NewBet: FC<props> = (props) => {
     const newButtons = newArrButton;
     for (let i = 0; i < props.currentGame.range; i++) {
       newButtons.push(
-        <GameButton onClick={(e) => handleButton(i + 1)} selected={isSelectedArray[i]} key={i}>
+        <GameButton
+          onClick={(e) => handleButton(i + 1)}
+          selected={isSelectedArray[i]}
+          color={props.currentGame.color}
+          key={i}
+        >
           {i + 1}
         </GameButton>
       );
@@ -81,7 +86,7 @@ const NewBet: FC<props> = (props) => {
         id: cart.jogos.length,
         user_id: Number(localStorage.getItem("user_id")),
         game_id: getNumbersToBets.game.id,
-        choosen_numbers: getNumbersToBets.numeros.join(', '),
+        choosen_numbers: getNumbersToBets.numeros.join(", "),
         price: getNumbersToBets.game.price,
         created_at: date.toString(),
         type: {

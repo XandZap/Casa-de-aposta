@@ -5,11 +5,13 @@ import CartTotal from "@components/UI/Cart/CartTotal";
 import SaveCart from "@components/UI/Cart/SaveCart";
 import { removeFromCart } from "@redux/cart.slice";
 import { selectCart } from "@redux/store";
+import betsServices from "@shared/services/bets";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 const CartCard = styled.div`
+  margin: 20px;
   display: flex;
   flex-direction: column;
   width: 24vw;
@@ -27,6 +29,7 @@ type remove = {
 const Cart = () => {
   const dispatch = useDispatch();
   const getCart = useSelector(selectCart);
+  const { saveNewBet } = betsServices();
 
   const removeCartItem = (remove: remove) => {
     dispatch(
@@ -35,6 +38,22 @@ const Cart = () => {
         price: remove.price,
       })
     );
+  };
+
+  const saveCart = async () => {
+    if (getCart.valorTotal > 30) {
+      const arrayToSave = getCart.jogos.map((element) => {
+        return { numbers: element.choosen_numbers.split(", ").map(Number), game_id: element.game_id };
+      });
+      try {
+        const resBet:any = await saveNewBet({ games: arrayToSave });
+        console.log(resBet.data);
+      } catch (error) {
+        alert('deu ruim')
+      }
+    } else {
+      alert("valor abaixo do esperado: 30");
+    }
   };
 
   const message = <h2 className="message">Adicione Jogos ao Carrinho</h2>;
@@ -61,7 +80,7 @@ const Cart = () => {
         </ul>
       </CartContent>
       <CartTotal valor={getCart.valorTotal} />
-      <SaveCart>Salvar</SaveCart>
+      <SaveCart onClick={saveCart}>Salvar</SaveCart>
     </CartCard>
   );
 };

@@ -8,7 +8,8 @@ import GameFilter from "@components/UI/games/GameFilter";
 
 const ChooseGameCard = styled.div`
   padding: 20px;
-  width: 60vw;
+  margin: 20px;
+  width: 50vw;
 `;
 
 const ChooseGame = () => {
@@ -17,8 +18,7 @@ const ChooseGame = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [idJogoAtual, setIdJogoAtual] = useState(0);
-  const tempArr: boolean[] = [true];
-  const [selected, setSelected] = useState(tempArr);
+  const [selected, setSelected] = useState([true]);
 
   const handleGame = (id: number) => {
     setIdJogoAtual(id - 1);
