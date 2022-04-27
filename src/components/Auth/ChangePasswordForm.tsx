@@ -82,7 +82,7 @@ const ChangePasswordForm = () => {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const { password, passwordConfirm } = data;
+    const { password } = data;
 
     const token = user.user.token;
 

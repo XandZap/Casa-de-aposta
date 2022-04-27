@@ -1,9 +1,7 @@
-import { types } from "@babel/core";
 import { selectUser } from "@redux/store";
 import { FC } from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { TypeOf } from "yup";
 
 type props = {
   children: React.ReactNode;
@@ -16,7 +14,7 @@ const PrivateRoute: FC<props> = (props) => {
   const user = useSelector(selectUser);
 
   function isEmpty(obj: any) {
-    return Object.keys(obj).length === 0 && obj.constructor === Object || obj.id === 0 && obj.token === null;
+    return (Object.keys(obj).length === 0 && obj.constructor === Object) || (obj.id === 0 && obj.token === null);
   }
 
   const emptyUserToken = isEmpty(user.user) && isEmpty(user.token);

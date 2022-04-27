@@ -12,9 +12,6 @@ import NewBetPage from "@pages/NewBetPage";
 
 import styled from "styled-components";
 
-import { selectUser } from "@redux/store";
-import { useSelector } from "react-redux";
-
 const RoutesStyle = styled.div`
   height: 89vh;
 `;
