@@ -1,5 +1,4 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
-import { type } from "os";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface initialRecentBetsValue {
   id: number;
@@ -39,18 +38,6 @@ export const recentBetSlice = createSlice({
       action.payload.forEach((element, index) => {
         state.splice(index, 0, element);
       });
-
-      // action.payload.forEach((element) => {
-      //   state.push({
-      //     id: element.id,
-      //     user_id: element.user_id,
-      //     game_id: element.game_id,
-      //     choosen_numbers: element.choosen_numbers,
-      //     price: element.price,
-      //     created_at: element.created_at,
-      //     type: { id: element.type.id, type: element.type.type },
-      //   });
-      // });
     },
 
     getFilteredBet: (state, action: PayloadAction<initialRecentBetsValue[]>) => {

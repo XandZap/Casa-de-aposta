@@ -1,20 +1,38 @@
 import { FC, useEffect, useState } from "react";
 
-import { GameType } from "@redux/interfaces";
-import GameButton from "@components/UI/games/GameButton";
 import { useSelector, useDispatch } from "react-redux";
-import { selectCart, selectNumbersToBet } from "@redux/store";
+import { selectCart, selectNumbersToBet, selectUser } from "@redux/store";
 import { addBet, addGameType, clearNumbersToBet, removeNumberToBet } from "@redux/addBet.slice";
 import { addToCart } from "@redux/cart.slice";
+import { GameType } from "@redux/interfaces";
+
+import GameButton from "@components/UI/games/GameButton";
+import { AlertMessage } from "@components/UI/games/AlertMessage";
+import { Buttons } from "@components/UI/games/Buttons";
+import styled from "styled-components";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
 type props = {
   currentGame: GameType;
+  minValue: number;
 };
+
+const StyledDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  @media (max-width: 723px) {
+    flex-direction: column;
+  }
+`;
 
 const NewBet: FC<props> = (props) => {
   const getNumbersToBets = useSelector(selectNumbersToBet);
-  const dispatch = useDispatch();
   const cart = useSelector(selectCart);
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   const newArr = Array(props.currentGame.range);
   const newArrButton = Array(props.currentGame.range);
@@ -22,9 +40,7 @@ const NewBet: FC<props> = (props) => {
   newArr.fill(false);
   const [isSelectedArray, setIsSelectedArray] = useState(newArr);
 
-  useEffect(() => {
-    setButtons();
-  }, [isSelectedArray, getNumbersToBets]);
+  const [maxNumberMessage, setmaxNumberMessage] = useState(false);
 
   useEffect(() => {
     clearGame();
@@ -49,19 +65,26 @@ const NewBet: FC<props> = (props) => {
           color={props.currentGame.color}
           key={i}
         >
-          {i + 1}
+          {(i + 1).toString().padStart(2, "0")}
         </GameButton>
       );
       setGamesButtons(newButtons);
     }
   };
 
+  useEffect(() => {
+    setButtons();
+  }, [isSelectedArray, getNumbersToBets]);
+
   const handleButton = async (i: number) => {
     if (getNumbersToBets.quantidadeTotal < props.currentGame.max_number || isSelectedArray[i - 1]) {
       isSelectedArray[i - 1] = !isSelectedArray[i - 1];
       isSelectedArray[i - 1] ? dispatch(addBet(i)) : dispatch(removeNumberToBet(i));
     } else {
-      console.log("Quantidade máxima selecionada: ", getNumbersToBets.quantidadeTotal);
+      toast.warning("Quantidade máxima selecionada: " + getNumbersToBets.quantidadeTotal + " números permitidos", {
+        autoClose: 1000,
+        toastId: 'customId',
+      });
     }
   };
 
@@ -80,23 +103,30 @@ const NewBet: FC<props> = (props) => {
   };
 
   const addCart = () => {
-    let date = new Date();
-    dispatch(
-      addToCart({
-        id: cart.jogos.length,
-        user_id: Number(localStorage.getItem("user_id")),
-        game_id: getNumbersToBets.game.id,
-        choosen_numbers: getNumbersToBets.numeros.join(", "),
-        price: getNumbersToBets.game.price,
-        created_at: date.toString(),
-        type: {
-          id: getNumbersToBets.game.id,
-          type: getNumbersToBets.game.gameType,
-          color: getNumbersToBets.game.color,
-        },
-      })
-    );
-    clearGame();
+    if (getNumbersToBets.quantidadeTotal === props.currentGame.max_number) {
+      let date = new Date();
+      dispatch(
+        addToCart({
+          id: cart.jogos.length,
+          user_id: user.user.id,
+          game_id: getNumbersToBets.game.id,
+          choosen_numbers: getNumbersToBets.numeros.join(", "),
+          price: getNumbersToBets.game.price,
+          created_at: date.toString(),
+          type: {
+            id: getNumbersToBets.game.id,
+            type: getNumbersToBets.game.gameType,
+            color: getNumbersToBets.game.color,
+          },
+        })
+      );
+      clearGame();
+    } else {
+      setmaxNumberMessage(true);
+      setTimeout(() => {
+        setmaxNumberMessage(false);
+      }, 2000);
+    }
   };
 
   const clearGame = () => {
@@ -104,19 +134,31 @@ const NewBet: FC<props> = (props) => {
     setIsSelectedArray(newArr);
   };
 
+  const messageMaxNumber = (
+    <AlertMessage className="message">
+      Você precisa adicionar mais {props.currentGame.max_number - getNumbersToBets.quantidadeTotal} números para
+      adicionar ao carrinho
+      <p>Adicione mais números</p>
+    </AlertMessage>
+  );
+
   return (
     <>
       <p>{props.currentGame.description}</p>
-      <ul>{gamesButtons.map((el: any) => el)}</ul>
-      <div>
+      {gamesButtons.map((el: any) => el)}
+      {maxNumberMessage && messageMaxNumber}
+      <StyledDiv>
         <div>
-          <button onClick={completeGame}>Completar o jogo</button>
-          <button onClick={clearGame}>Limpar jogo</button>
+          <Buttons onClick={completeGame}>Completar o jogo</Buttons>
+          <Buttons onClick={clearGame}>Limpar jogo</Buttons>
         </div>
         <div>
-          <button onClick={addCart}>Adicionar ao carrinho</button>
+          <Buttons isAdd={true} onClick={addCart}>
+            <FontAwesomeIcon icon={faCartShopping} style={{ color: "#F7f7f7" }} />
+            Adicionar ao carrinho
+          </Buttons>
         </div>
-      </div>
+      </StyledDiv>
     </>
   );
 };

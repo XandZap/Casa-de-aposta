@@ -1,43 +1,33 @@
+import { useEffect, useState } from "react";
+
+import { useSelector, useDispatch } from "react-redux";
+import { selectGames, selectRecentBet, selectUser } from "@redux/store";
+import { fetchFilteredBetsData, fetchRecentBetData } from "@redux/recentBets.actions";
+
+import { Filter } from "@components/UI/games/Filter";
 import GameFilter from "@components/UI/games/GameFilter";
 import RecentGamesButton from "@components/UI/games/RecentGamesButton";
-import { fetchFilteredBetsData, fetchRecentBetData } from "@redux/recentBets.actions";
-import { selectGames, selectRecentBet } from "@redux/store";
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 
-const UlStyle = styled.ul`
+const ContainerStyle = styled.div`
   list-style-type: none;
   max-height: 50vh;
   width: 600px;
   overflow-y: auto;
-  li button {
-    text-align: left;
-    font: italic normal bold 20px/70px Helvetica;
-    letter-spacing: 0px;
-    color: #868686;
-    opacity: 1;
-  }
-  .data-valor {
-    text-align: left;
-    font: normal normal normal 17px/70px Helvetica Neue;
-    letter-spacing: 0px;
-    color: #868686;
-    opacity: 1;
-  }
 `;
 
 const RecentGames = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [selected, setSelected] = useState([false]);
+  const [selected] = useState([false]);
   const [idJogoAtual, setIdJogoAtual] = useState(0);
 
   const getGames = useSelector(selectGames);
+  const user = useSelector(selectUser);
   const getRecentGames = useSelector(selectRecentBet);
   const dispatch: any = useDispatch();
 
   useEffect(() => {
-    if (getRecentGames.length > 0 && getGames.types.length > 0) {
+    if (getGames.types.length > 0) {
       setIsLoading(false);
     }
   }, [getRecentGames, getGames]);
@@ -46,17 +36,21 @@ const RecentGames = () => {
     setIdJogoAtual(id - 1);
     selected.fill(false);
     selected[id - 1] = !selected[id - 1];
-    dispatch(fetchFilteredBetsData(type));
+    dispatch(fetchFilteredBetsData(type, user.token.token));
   };
 
   const clearFilter = () => {
-    dispatch(fetchRecentBetData());
+    selected.fill(false);
+    dispatch(fetchRecentBetData(user.token.token));
   };
 
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <>
+      <Filter onClick={clearFilter} className="filters">
+        Filtros
+      </Filter>
       {getGames.types.map((element, index) => (
         <GameFilter
           key={index + 100}
@@ -67,32 +61,38 @@ const RecentGames = () => {
           {element.type}
         </GameFilter>
       ))}
-      <button onClick={clearFilter}>limpar filtros</button>
-      <UlStyle>
-        {getRecentGames.map((element, index) => {
-          let date = new Date(element.created_at);
-          let newDate =
-            date.getDate().toString().padStart(2, "0") +
-            "/" +
-            (date.getMonth() + 1).toString().padStart(2, "0") +
-            "/" +
-            date.getFullYear();
-          let color = "#ffff";
-          getGames.types.forEach((value) => {
-            if (value.type === element.type.type) color = value.color;
-          });
 
-          return (
-            <RecentGamesButton key={index + 200} color={color}>
-              <button>{element.choosen_numbers}</button>
-              <p className="data-valor">
-                {newDate} ({element.price.toLocaleString("pt-br", { style: "currency", currency: "BRL" })})
-              </p>
-              <p>{element.type.type}</p>
-            </RecentGamesButton>
-          );
-        })}
-      </UlStyle>
+      <ContainerStyle>
+        {getRecentGames
+          .map((element, index) => {
+            let date = new Date(element.created_at);
+            let newDate =
+              date.getDate().toString().padStart(2, "0") +
+              "/" +
+              (date.getMonth() + 1).toString().padStart(2, "0") +
+              "/" +
+              date.getFullYear();
+            let color = "#ffff";
+
+            getGames.types.forEach((value) => {
+              if (value.type === element.type.type) color = value.color;
+            });
+
+            return (
+              <RecentGamesButton key={index + 200} color={color}>
+                <div className="linha"></div>
+                <div className="container">
+                  <span className="numbers">{element.choosen_numbers}</span>
+                  <span className="data-valor">
+                    {newDate} ({element.price.toLocaleString("pt-br", { style: "currency", currency: "BRL" })})
+                  </span>
+                  <span className="type">{element.type.type}</span>
+                </div>
+              </RecentGamesButton>
+            );
+          })
+          .reverse()}
+      </ContainerStyle>
     </>
   );
 };

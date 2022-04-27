@@ -10,15 +10,23 @@ const ChooseGameCard = styled.div`
   padding: 20px;
   margin: 20px;
   width: 50vw;
+  @media (max-width: 800px) {
+    .chooseGameButtons {
+      display: flex;
+      flex-direction: column;
+      margin: 0px;
+    }
+  }
 `;
 
 const ChooseGame = () => {
   const getGames = useSelector(selectGames);
   const gamesType = getGames.types;
+  const minValue = getGames.min_cart_value;
 
   const [isLoading, setIsLoading] = useState(true);
   const [idJogoAtual, setIdJogoAtual] = useState(0);
-  const [selected, setSelected] = useState([true]);
+  const [selected] = useState([true]);
 
   const handleGame = (id: number) => {
     setIdJogoAtual(id - 1);
@@ -39,7 +47,7 @@ const ChooseGame = () => {
     <ChooseGameCard>
       <h2>Nova aposta para {gamesType[idJogoAtual].type}</h2>
       <p>Escolha um jogo</p>
-      <ul>
+      <span className="chooseGameButtons">
         {gamesType.map((element, index) => (
           <GameFilter
             color={element.color}
@@ -50,9 +58,9 @@ const ChooseGame = () => {
             {element.type}
           </GameFilter>
         ))}
-      </ul>
+      </span>
       <p>Preencha sua aposta</p>
-      <NewBet currentGame={gamesType[idJogoAtual]} />
+      <NewBet currentGame={gamesType[idJogoAtual]} minValue={minValue} />
     </ChooseGameCard>
   );
 };

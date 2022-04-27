@@ -9,8 +9,12 @@ import { authServices } from "@shared/services";
 import AuthCard from "@components/UI/Auth/AuthCard";
 import Button from "@components/UI/Auth/Button";
 import ErrorField from "@ui/Auth/ErrorField";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { addUser } from "@redux/user.slice";
 
 const LoginControl = styled.div`
   display: flex;
@@ -75,6 +79,8 @@ const LoginForm = () => {
   const { login } = authServices();
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -95,9 +101,10 @@ const LoginForm = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
+        toastId: 'customId',
       });
-      localStorage.setItem("token", resLogin.data.token.token);
-      localStorage.setItem("user_id", resLogin.data.user.id.toString());
+      dispatch(addUser(resLogin.data));
+
       navigate("/");
     } catch (error: any) {
       if (error.status === 401) {
@@ -109,6 +116,7 @@ const LoginForm = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+          toastId: 'customId',
         });
       }
     }
@@ -127,11 +135,14 @@ const LoginForm = () => {
           <Link to="../resetpassword" className="forget">
             Esqueceu a senha?
           </Link>
-          <Button type="submit">Entrar</Button>
+          <Button type="submit">
+            Entrar <FontAwesomeIcon icon={faArrowRight} style={{ color: "#B5C401", marginLeft: 10 }} />
+          </Button>
         </form>
       </AuthCard>
       <Link className="registrar" to="../register">
         Registrar
+        <FontAwesomeIcon icon={faArrowRight} style={{ color: "#707070", marginLeft: 10 }} />
       </Link>
     </LoginControl>
   );

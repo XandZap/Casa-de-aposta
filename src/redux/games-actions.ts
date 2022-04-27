@@ -3,6 +3,7 @@ import { replaceGames } from "./games.slice";
 import { AppThunk } from "./store";
 
 import { toast } from "react-toastify";
+import { addMinCartValue } from "./cart.slice";
 
 const { getGames } = getGamesServices();
 
@@ -19,6 +20,8 @@ export const fetchGamesData = (): AppThunk => {
       success: "Jogos carregados com sucesso",
       error: "Erro ao carregar jogos",
     });
+
+    dispatch(addMinCartValue({ min_cart_value: gamesData.min_cart_value }));
 
     dispatch(
       replaceGames({

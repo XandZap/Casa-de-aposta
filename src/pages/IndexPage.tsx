@@ -6,6 +6,12 @@ const PageControl = styled.div`
   height: 89.5vh;
   display: flex;
   justify-content: space-evenly;
+  
+  @media(max-width: 1040px){
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
 `;
 
 const IndexPage = () => {

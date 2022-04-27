@@ -8,10 +8,14 @@ import styled from "styled-components";
 
 const NovaAposta = styled.div`
   display: flex;
-  height: 100%;
   min-height: 68vh;
   width: 100%;
   justify-content: space-around;
+
+  @media (max-width: 723px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const NewBetPage = () => {

@@ -10,6 +10,11 @@ import ErrorField from "@ui/Auth/ErrorField";
 import { authServices } from "@shared/services";
 
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { selectUser } from "@redux/store";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const ResetControl = styled.div`
   display: flex;
@@ -52,16 +57,21 @@ const schema = yup
       .string()
       .required("Você deve preencher o campo senha")
       .min(4, "Senha deve ter no mínimo 4 caracters"),
+    passwordConfirm: yup.string().oneOf([yup.ref("password"), null], "Senhas devem ser iguais"),
   })
+
   .required();
 
 type Inputs = {
   password: string;
+  passwordConfirm: string;
 };
 
 const ChangePasswordForm = () => {
   const navigate = useNavigate();
   const { changePassword } = authServices();
+
+  const user = useSelector(selectUser);
 
   const {
     register,
@@ -72,11 +82,12 @@ const ChangePasswordForm = () => {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const { password } = data;
-    const token = localStorage.getItem("token");
+    const { password, passwordConfirm } = data;
+
+    const token = user.user.token;
 
     try {
-      const resChangePass = await changePassword({ password }, token);
+      await changePassword({ password }, token);
 
       toast.success("Sucesso na mudança de senha", {
         position: "top-right",
@@ -86,10 +97,10 @@ const ChangePasswordForm = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
+        toastId: "customId",
       });
 
       navigate("/welcome/login");
-
     } catch (error: any) {
       if (error.status === 404) {
         toast.error(error.data.message, {
@@ -100,6 +111,7 @@ const ChangePasswordForm = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+          toastId: "customId",
         });
       } else {
         toast.error("Falha na mudança de senha" + error, {
@@ -110,6 +122,7 @@ const ChangePasswordForm = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+          toastId: "customId",
         });
       }
     }
@@ -120,13 +133,23 @@ const ChangePasswordForm = () => {
       <AuthCard titulo="Mudar senha">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="input">
-            <input {...register("password", { required: true })} placeholder="Nova Senha" />
+            <input {...register("password", { required: true })} type={"password"} placeholder="Nova Senha" />
             {errors.password && <ErrorField>{errors.password.message}</ErrorField>}
+            <input
+              {...register("passwordConfirm", { required: true })}
+              type={"password"}
+              placeholder="Confirme a senha"
+            />
+            {errors.passwordConfirm && <ErrorField>{errors.passwordConfirm.message}</ErrorField>}
           </div>
-          <Button>Enviar Link</Button>
+          <Button>
+            Salvar senha
+            <FontAwesomeIcon icon={faArrowRight} style={{ color: "#B5C401", marginLeft: 10 }} />
+          </Button>
         </form>
       </AuthCard>
       <Link className="back" to="../login">
+        <FontAwesomeIcon icon={faArrowLeft} style={{ color: "#707070", marginRight: 10 }} />
         Voltar
       </Link>
     </ResetControl>

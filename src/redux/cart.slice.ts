@@ -1,8 +1,9 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type initialCartValue = {
   valorTotal: number;
   jogos: initialCartArray[];
+  min_cart_value: number;
 };
 
 export interface initialCartArray {
@@ -27,6 +28,7 @@ interface removeCart {
 }
 
 const initialState: initialCartValue = {
+  min_cart_value: 0,
   valorTotal: 0,
   jogos: [],
 };
@@ -35,10 +37,18 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    addMinCartValue: (state, action: PayloadAction<{ min_cart_value: number }>) => {
+      state.min_cart_value = action.payload.min_cart_value;
+    },
     addToCart: (state, action: PayloadAction<initialCartArray>) => {
       state.jogos.push(action.payload);
       state.valorTotal += action.payload.price;
     },
+    clearCart: (state) => {
+      state.jogos.splice(0, state.jogos.length);
+      state.valorTotal = 0;
+    },
+
     removeFromCart: (state, action: PayloadAction<removeCart>) => {
       let index = state.jogos.findIndex((i) => i.id === action.payload.betId);
       state.jogos.splice(index, 1);
@@ -47,4 +57,4 @@ export const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, addMinCartValue, clearCart } = cartSlice.actions;

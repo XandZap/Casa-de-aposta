@@ -9,6 +9,9 @@ const SaveCart = styled.button`
   border: 1px solid #e2e2e2;
   height: 9.143vh;
   border-radius: 0px 0px 10px 10px;
+  @media (max-height: 574px) {
+    height: 14vh;
+  }
 `;
 
 export default SaveCart;

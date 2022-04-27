@@ -11,6 +11,7 @@ const CartContent = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
   font-size: 0.5rem;
+
   
 `;
 export default CartContent;

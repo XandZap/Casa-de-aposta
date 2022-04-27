@@ -4,6 +4,7 @@ import { addBetSlice } from "./addBet.slice";
 import { cartSlice } from "./cart.slice";
 import { gamesSlice } from "./games.slice";
 import { recentBetSlice } from "./recentBets.slice";
+import { userSlice } from "./user.slice";
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     numbersToBet: addBetSlice.reducer,
     cart: cartSlice.reducer,
     recentBet: recentBetSlice.reducer,
+    user: userSlice.reducer,
   },
 });
 
@@ -20,6 +22,7 @@ export const selectGames = (state: RootState) => state.games;
 export const selectNumbersToBet = (state: RootState) => state.numbersToBet;
 export const selectCart = (state: RootState) => state.cart;
 export const selectRecentBet = (state: RootState) => state.recentBet;
+export const selectUser = (state: RootState) => state.user;
 
 export type AppDispatch = typeof store.dispatch;
 export type AppThunk = ThunkAction<void, RootState, null, Action<string>>;

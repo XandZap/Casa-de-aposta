@@ -7,9 +7,14 @@ import * as yup from "yup";
 import AuthCard from "@components/UI/Auth/AuthCard";
 import Button from "@ui/Auth/Button";
 import ErrorField from "@ui/Auth/ErrorField";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+
 import { authServices } from "@shared/services";
 
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { addResetPassUser } from "@redux/user.slice";
 
 const ResetControl = styled.div`
   display: flex;
@@ -59,6 +64,7 @@ type Inputs = {
 const ResetPasswordForm = () => {
   const navigate = useNavigate();
   const { reset } = authServices();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -80,9 +86,11 @@ const ResetPasswordForm = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
+        toastId: 'customId',
       });
-      localStorage.setItem("token", resResetPass.data.token);
+      dispatch(addResetPassUser(resResetPass.data));
       navigate("/welcome/change");
+
     } catch (error: any) {
       if (error.status === 404) {
         toast.error(error.data.message, {
@@ -93,6 +101,7 @@ const ResetPasswordForm = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+          toastId: 'customId',
         });
       } else {
         toast.error("Falha na validação de email: " + error.data.errors[0].message, {
@@ -103,6 +112,7 @@ const ResetPasswordForm = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+          toastId: 'customId',
         });
       }
     }
@@ -116,10 +126,14 @@ const ResetPasswordForm = () => {
             <input {...register("email", { required: true })} placeholder="Email" />
             {errors.email && <ErrorField>{errors.email.message}</ErrorField>}
           </div>
-          <Button>Enviar Link</Button>
+          <Button>
+            Enviar Link
+            <FontAwesomeIcon icon={faArrowRight} style={{ color: "#B5C401", marginLeft: 10 }} />
+          </Button>
         </form>
       </AuthCard>
       <Link className="back" to="../login">
+        <FontAwesomeIcon icon={faArrowLeft} style={{ color: "#707070", marginRight: 10 }} />
         Voltar
       </Link>
     </ResetControl>

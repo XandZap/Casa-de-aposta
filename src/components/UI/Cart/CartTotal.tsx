@@ -12,6 +12,13 @@ const TotalContainer = styled.div`
   font-size: 1.3rem;
   font-weight: 300;
   font-style: italic;
+
+  @media (max-width: 880px) {
+    font-size: 1rem;
+    .message{
+      font-size: 2em;
+    }
+  }
 `;
 
 type props = {

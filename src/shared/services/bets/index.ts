@@ -3,27 +3,28 @@ import instance from "../axios.config";
 import { IUser } from "./interfaces";
 
 const betsServices = (): IUser => {
-  async function listBet(): Promise<IResponseListBet> {
+
+  async function listBet(token: string): Promise<IResponseListBet> {
     return instance.get("/bet/all-bets", {
       headers: {
-        Authorization: `bearer ${localStorage.getItem("token")}`,
+        Authorization: `bearer ${token}`,
       },
     });
   }
 
-  async function filterBets(id: string): Promise<IResponseListBet> {
+  async function filterBets(id: string, token: string): Promise<IResponseListBet> {
     return instance.get("/bet/all-bets", {
       params: { "type[]": id },
       headers: {
-        Authorization: `bearer ${localStorage.getItem("token")}`,
+        Authorization: `bearer ${token}`,
       },
     });
   }
 
-  async function saveNewBet(body: IBodyNewBet): Promise<IResponseNewBet> {
+  async function saveNewBet(body: IBodyNewBet, token: string): Promise<IResponseNewBet> {
     return instance.post("/bet/new-bet", body, {
       headers: {
-        Authorization: `bearer ${localStorage.getItem("token")}`,
+        Authorization: `bearer ${token}`,
       },
     });
   }
