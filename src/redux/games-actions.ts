@@ -15,11 +15,15 @@ export const fetchGamesData = (): AppThunk => {
     };
 
     const gamesData = await fetchGames();
-    toast.promise(fetchGames, {
-      pending: "Carregando jogos",
-      success: "Jogos carregados com sucesso",
-      error: "Erro ao carregar jogos",
-    });
+    toast.promise(
+      fetchGames,
+      {
+        pending: "Carregando jogos",
+        success: "Jogos carregados com sucesso",
+        error: "Erro ao carregar jogos",
+      },
+      { pauseOnFocusLoss: false, autoClose: 500, toastId: "customId" }
+    );
 
     dispatch(addMinCartValue({ min_cart_value: gamesData.min_cart_value }));
 

@@ -22,15 +22,11 @@ function App() {
       </AppStyle>
       <Footer className="footer">Copyright 2020 Luby Software</Footer>
       <ToastContainer
+        
         position="top-right"
         autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
         pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover
+        limit={3}
       />
     </>
   );
