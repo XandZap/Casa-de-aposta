@@ -15,6 +15,8 @@ import { selectUser } from "@redux/store";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch } from "react-redux";
+import { removeUser } from "@redux/user.slice";
 
 const ResetControl = styled.div`
   display: flex;
@@ -69,6 +71,7 @@ type Inputs = {
 
 const ChangePasswordForm = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const { changePassword } = authServices();
 
   const user = useSelector(selectUser);
@@ -99,8 +102,9 @@ const ChangePasswordForm = () => {
         progress: undefined,
         toastId: "customId",
       });
-
+      dispatch(removeUser())
       navigate("/welcome/login");
+
     } catch (error: any) {
       if (error.status === 404) {
         toast.error(error.data.message, {

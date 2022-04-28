@@ -26,7 +26,7 @@ const Rotas = () => {
           <Route
             path="login"
             element={
-              <PrivateRoute login={true}>
+              <PrivateRoute auth={true}>
                 <LoginForm />
               </PrivateRoute>
             }

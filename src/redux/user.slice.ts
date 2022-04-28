@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type initialUserValue = {
   user: User;
   token: Token;
+  isLogged?: boolean;
 };
 
 interface Token {
@@ -40,16 +41,17 @@ const initialState: initialUserValue = {
     token: "",
     expires_at: "",
   },
+  isLogged: false,
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    
     addUser: (state, action: PayloadAction<initialUserValue>) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
+      state.isLogged = true;
       localStorage.setItem("token", JSON.stringify(action.payload.token));
       localStorage.setItem("user", JSON.stringify(action.payload.user));
     },
@@ -57,6 +59,7 @@ export const userSlice = createSlice({
     removeUser: (state) => {
       state.user = initialState.user;
       state.token = initialState.token;
+      state.isLogged = false;
       localStorage.clear();
     },
 
@@ -65,10 +68,13 @@ export const userSlice = createSlice({
     },
 
     getUser: (state) => {
-      const newUser = JSON.parse(localStorage.getItem("user") || "{}");
-      const newToken = JSON.parse(localStorage.getItem("token") || "{}");
-      state.user = newUser;
-      state.token = newToken;
+      if (localStorage.length !== 0) {
+        const newUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const newToken = JSON.parse(localStorage.getItem("token") || "{}");
+        state.user = newUser;
+        state.token = newToken;
+        state.isLogged = true;
+      }
     },
   },
 });

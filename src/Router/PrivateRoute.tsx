@@ -13,19 +13,16 @@ type props = {
 const PrivateRoute: FC<props> = (props) => {
   const user = useSelector(selectUser);
 
-  function isEmpty(obj: any) {
-    return (Object.keys(obj).length === 0 && obj.constructor === Object) || (obj.id === 0 && obj.token === null);
-  }
+  if (!user.isLogged && props.changePass && user.user.email !== "") return <>{props.children}</>;
 
-  const emptyUserToken = isEmpty(user.user) && isEmpty(user.token);
+  if (!user.isLogged && props.changePass && user.user.email === "")
+    return <Navigate to="/welcome/resetpassword" replace />;
 
-  if (emptyUserToken && props.changePass) return <Navigate to="/welcome/resetpassword" replace />;
-
-  if (emptyUserToken && !props.login) {
+  if (!user.isLogged && !props.auth) {
     return <Navigate to="/welcome/login" replace />;
   }
 
-  if (!emptyUserToken && props.auth) return <Navigate to="/" replace />;
+  if (user.isLogged && props.auth) return <Navigate to="/" replace />;
 
   return <>{props.children}</>;
 };
